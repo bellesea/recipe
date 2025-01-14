@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from typing import List, Dict
 import uuid
 
+database_filename = "recipes.db"
 # Part A: Getting Data from an API
 def fetch_nutrition_data(ingredient: str) -> Dict:
     """
@@ -90,7 +91,7 @@ def initialize_database():
     """
     Create or connect to a SQLite database and set up tables for recipes and ingredients.
     """
-    conn = sqlite3.connect("new_recipes2.db")
+    conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS recipes (
@@ -117,7 +118,7 @@ def store_data_in_db(recipe: Dict):
     """
     Store recipe and ingredient data into the SQLite database.
     """
-    conn = sqlite3.connect("new_recipes2.db")
+    conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) FROM recipes WHERE title = ? AND link = ?", (recipe['title'], recipe['link']))
     if cursor.fetchone()[0] > 0:
@@ -141,7 +142,7 @@ def fetch_ingredients_with_nutrition(recipe_id: int):
     """
     Fetch all ingredients for a given recipe ID and display the ingredient with nutrition data.
     """
-    conn = sqlite3.connect("new_recipes2.db")
+    conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
 
     # Query to fetch ingredients and nutrition data for the given recipe ID
@@ -193,7 +194,7 @@ def show_recipe(title, link, recipe_id, calorie):
                 
         if st.button(f"Delete Recipe :no_entry_sign:", key=recipe_id):  # Check if the checkbox is selected
             st.info("Deleting the recipe...")
-            conn = sqlite3.connect("new_recipes2.db")
+            conn = sqlite3.connect(database_filename)
             cursor = conn.cursor()
             
             # Delete ingredients where recipe_id matches
@@ -215,7 +216,7 @@ def show_recipe(title, link, recipe_id, calorie):
 def find_max_calorie():
     max_calories = st.slider("Select maximum calories", 0, 1000, 500)
     # Fetch the recipe data
-    conn = sqlite3.connect("new_recipes2.db")
+    conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
     cursor.execute("SELECT title, link, recipe_id, calorie FROM recipes")
     rows = cursor.fetchall()
@@ -249,7 +250,7 @@ def find_recipe():
     # Get the desired ingredients from the user
     desired_ingredients = st.text_input("Enter desired ingredients (comma-separated):", "").split(",")
     # Connect to the database
-    conn = sqlite3.connect("new_recipes2.db")
+    conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
     
     # Prepare the SQL query using the `LIKE` operator for partial matches
@@ -318,7 +319,7 @@ def main():
     st.session_state.my_recipes_displayed = False
     if st.button("Show my recipes"):
         st.session_state.my_recipes_displayed = True
-        conn = sqlite3.connect("new_recipes2.db")
+        conn = sqlite3.connect(database_filename)
         cursor = conn.cursor()
         cursor.execute("SELECT title, link, recipe_id, calorie FROM recipes")
         rows = cursor.fetchall()
