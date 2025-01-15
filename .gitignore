@@ -1,3 +1,4 @@
 .env
-venv
+venv/
 recipes.db
+__pycache__/

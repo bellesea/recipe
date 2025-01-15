@@ -18,7 +18,7 @@ Launch Streamlit locally:
 ```
 streamlit run landing_page.py
 ```
-
+If you run into issues, check the [troubleshooting section](#troubleshooting) Below
 ## Project Structure
 `src/models.py`
 - Contains SQLAlchemy model definitions (Recipe and Ingredient) and related methods that are closely tied to these models.
@@ -34,6 +34,21 @@ streamlit run landing_page.py
 
 `landing_page.py`
 - Streamlit app that ties together the functionality. Main Entry Point.
+
+## Troubleshooting
+You installed everything but it says something like `ModuleNotFoundError: No module named __`
+try running
+```
+which python
+```
+and 
+```
+which streamlit
+```
+to check if the path is correct. If streamlit path is incorrect, do:
+```
+python -m streamlit run landing_page.py
+```
 
 ## Comments
 Code is formatted with `Black Formatter`
