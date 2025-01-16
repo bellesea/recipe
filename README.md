@@ -13,6 +13,8 @@ USDA_API_KEY=<your usda api key>
 ```
 to the .env file.
 
+_You can get your USDA API Key [here](https://fdc.nal.usda.gov/api-key-signup)_
+
 ## Running Locally
 Launch Streamlit locally:
 ```
