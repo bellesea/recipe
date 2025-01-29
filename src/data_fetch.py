@@ -11,9 +11,14 @@ def fetch_nutrition_data(ingredient: str) -> Dict:
     Fetch nutrition data for a given ingredient from the USDA FoodData Central API.
     """
     api_url = "https://api.nal.usda.gov/fdc/v1/foods/search"
+    api_key = (
+        os.environ.get("USDA_API_KEY")
+        if os.environ.get("USDA_API_KEY")
+        else st.secrets["USDA_API_KEY"]
+    )
     params = {
         "query": ingredient,
-        "api_key": os.environ.get("USDA_API_KEY"),
+        "api_key": api_key,
         "pageSize": 1,
     }
     response = requests.get(api_url, params=params, verify=False)
