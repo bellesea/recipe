@@ -1,5 +1,5 @@
 # CS 248 Example Code
-Work In Process
+Work In Process. See [sample website](https://recipe-cs248.streamlit.app/)
 ## Getting Started
 Clone the repository and cd into it.
 
