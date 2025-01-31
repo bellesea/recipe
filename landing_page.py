@@ -1,8 +1,19 @@
 import streamlit as st
 from src.config import Session
-from src.data_fetch import scrape_recipes
+from src.data_fetch import scrape_recipes, get_current_location, search_google_restaurants
 from src.db_operations import store_data_in_db, fetch_ingredients_with_nutrition
 from src.models import Recipe
+import os
+
+##### Set Up ####
+
+google_api_key = (
+    os.environ.get("GOOGLE_KEY")
+    if os.environ.get("GOOGLE_KEY")
+    else st.secrets["GOOGLE_KEY"]
+)
+
+##### Streamlit #####
 
 st.title("All in one meal planning app")
 st.write(
@@ -93,3 +104,27 @@ if st.session_state.search_clicked:
                     st.session_state.add_recipe_clicked = False
     else:
         st.warning("No recipes found for your query. Try another search term.")
+
+st.header("Restaurants Near Me")
+if st.button("Find Restaurants"):
+    lat, lon = get_current_location(google_api_key)
+    st.write("Your location:", lat, lon)
+    if lat and lon:
+        results = search_google_restaurants(google_api_key, lat, lon)
+        cols = st.columns(2)  # Create two columns for grid layout
+            
+        for i, business in enumerate(results):
+            with cols[i % 2]:  # Alternate between columns
+                st.write(f"**{business['name']}** - {business.get('rating', 'N/A')} ⭐")
+                st.write(f"📍 {business['vicinity']}")
+                st.write(f"[Visit on Google Maps](https://www.google.com/maps/place/?q=place_id:{business['place_id']})")
+                
+                photos = business.get("photos", [])
+                if photos:
+                    photo_reference = photos[0]["photo_reference"]
+                    photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={google_api_key}"
+                    st.image(photo_url, width=300)
+
+    else:
+        st.error("Could not retrieve location.")
+

@@ -3,7 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict
 import os
-
+import requests
+from googlemaps import Client
 
 # Part A: Getting Data from an API
 def fetch_nutrition_data(ingredient: str) -> Dict:
@@ -106,3 +107,18 @@ def get_ingredients(recipe):
         )
 
     return recipe
+
+def get_current_location(google_api_key):
+    gmaps = Client(key=google_api_key)
+    geocode_result = gmaps.geolocate()
+    location = geocode_result.get("location", {})
+    return location.get("lat"), location.get("lng")
+
+def search_google_restaurants(google_api_key, latitude, longitude, radius=8047):  # 5 miles in meters
+    gmaps = Client(key=google_api_key)
+    places_result = gmaps.places_nearby(
+        location=(latitude, longitude),
+        radius=radius,
+        type="restaurant"
+    )
+    return places_result.get("results", [])
